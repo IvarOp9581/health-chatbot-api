@@ -4,11 +4,17 @@ Optimized queries for food search, FTS, and nutritional analysis
 """
 
 import aiosqlite
+import os
 from pathlib import Path
 from typing import List, Dict, Optional
 
 BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "health_data.db"
+
+# Use /tmp directory on Vercel (serverless environment)
+if os.environ.get('VERCEL'):
+    DB_PATH = Path("/tmp/health_data.db")
+else:
+    DB_PATH = BASE_DIR / "health_data.db"
 
 async def search_foods_by_name(query: str, limit: int = 10) -> List[Dict]:
     """

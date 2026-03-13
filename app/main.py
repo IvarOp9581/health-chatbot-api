@@ -58,19 +58,33 @@ async def lifespan(app: FastAPI):
     # Startup
     print("🚀 Starting Health Chatbot Backend...")
     
-    # Initialize database
-    await init_db()
-    await init_session_table()
+    try:
+        # Initialize database
+        await init_db()
+        await init_session_table()
+        print("✅ Database initialized")
+    except Exception as e:
+        print(f"⚠️  Database initialization error: {e}")
+        # Continue anyway - database will be created on first query if needed
     
     # Initialize Firestore (if enabled)
-    init_firestore()
+    try:
+        init_firestore()
+    except Exception as e:
+        print(f"⚠️  Firestore initialization error: {e}")
     
     # Initialize AI clients
-    ai_manager = get_ai_manager()
-    print(f"🤖 AI Status: {ai_manager.get_status()}")
+    try:
+        ai_manager = get_ai_manager()
+        print(f"🤖 AI Status: {ai_manager.get_status()}")
+    except Exception as e:
+        print(f"⚠️  AI initialization error: {e}")
     
-    # Start background tasks
-    cleanup_task = asyncio.create_task(cleanup_sessions_task())
+    # Start background tasks only if not on Vercel
+    cleanup_task = None
+    if not os.environ.get('VERCEL'):
+        cleanup_task = asyncio.create_task(cleanup_sessions_task())
+        print("🔄 Background tasks started")
     
     print("✅ Server ready!")
     
@@ -78,8 +92,12 @@ async def lifespan(app: FastAPI):
     
     # Shutdown
     print("🛑 Shutting down...")
-    cleanup_task.cancel()
-    await close_db()
+    if cleanup_task:
+        cleanup_task.cancel()
+    try:
+        await close_db()
+    except:
+        pass
     print("👋 Goodbye!")
 
 # Create FastAPI app

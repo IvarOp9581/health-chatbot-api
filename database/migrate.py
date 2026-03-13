@@ -12,7 +12,12 @@ from pathlib import Path
 # Paths
 BASE_DIR = Path(__file__).parent.parent
 CSV_PATH = BASE_DIR / "health_master.csv"
-DB_PATH = BASE_DIR / "health_data.db"
+
+# Use /tmp directory on Vercel (serverless environment)
+if os.environ.get('VERCEL'):
+    DB_PATH = Path("/tmp/health_data.db")
+else:
+    DB_PATH = BASE_DIR / "health_data.db"
 
 def migrate_csv_to_sqlite():
     """Migrate CSV data to SQLite with FTS5 index"""

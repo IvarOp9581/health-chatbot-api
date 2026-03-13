@@ -64,6 +64,9 @@ firebase-credentials.json
 test_*.py
 check_db.py
 
+# API keys documentation (keep local only)
+API_KEYS_SECURE.md
+
 # Temporary documentation (keep local only)
 *_GUIDE.md
 *_REPORT.md

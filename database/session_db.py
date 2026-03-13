@@ -6,12 +6,18 @@ Persistent user session storage in SQLite
 import aiosqlite
 import json
 import uuid
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Optional
 
 BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "health_data.db"
+
+# Use /tmp directory on Vercel (serverless environment)
+if os.environ.get('VERCEL'):
+    DB_PATH = Path("/tmp/health_data.db")
+else:
+    DB_PATH = BASE_DIR / "health_data.db"
 
 async def init_session_table():
     """Create session table if it doesn't exist"""
