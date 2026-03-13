@@ -11,16 +11,5 @@
       "src": "/(.*)",
       "dest": "app/main.py"
     }
-  ],
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key",
-    "XAI_API_KEY": "@xai_api_key",
-    "USE_FIRESTORE": "false",
-    "HOST": "0.0.0.0",
-    "PORT": "8000",
-    "DEBUG": "false",
-    "SESSION_EXPIRY_DAYS": "7",
-    "RATE_LIMIT_PER_HOUR": "100",
-    "RATE_LIMIT_PER_MINUTE": "20"
-  }
+  ]
 }
