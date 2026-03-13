@@ -46,12 +46,25 @@ async def get_db():
 
 async def init_db():
     """Initialize database connection (call on startup)"""
-    # Verify database exists
+    # Check if database exists
     if not DB_PATH.exists():
-        raise FileNotFoundError(
-            f"Database not found at {DB_PATH}. "
-            f"Please run: python database/migrate.py"
-        )
+        print(f"⚠️  Database not found at {DB_PATH}")
+        
+        # On Vercel, automatically create database from CSV
+        if os.environ.get('VERCEL'):
+            print("🔄 Creating database from CSV (this may take 10-15 seconds)...")
+            try:
+                from database.migrate import migrate_csv_to_sqlite
+                migrate_csv_to_sqlite()
+                print("✅ Database created successfully")
+            except Exception as e:
+                print(f"❌ Failed to create database: {e}")
+                raise
+        else:
+            raise FileNotFoundError(
+                f"Database not found at {DB_PATH}. "
+                f"Please run: python database/migrate.py"
+            )
     
     print(f"✅ Database connected: {DB_PATH}")
     return True

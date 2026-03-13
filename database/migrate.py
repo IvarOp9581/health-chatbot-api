@@ -23,9 +23,18 @@ def migrate_csv_to_sqlite():
     """Migrate CSV data to SQLite with FTS5 index"""
     
     print(f"🔄 Starting migration from {CSV_PATH} to {DB_PATH}")
+    print(f"   CSV exists: {CSV_PATH.exists()}")
+    print(f"   CSV path: {CSV_PATH}")
+    print(f"   DB path: {DB_PATH}")
     
     # Check if CSV exists
     if not CSV_PATH.exists():
+        print(f"❌ CSV file not found at: {CSV_PATH}")
+        print(f"   Current directory: {os.getcwd()}")
+        print(f"   BASE_DIR: {BASE_DIR}")
+        # List files to debug
+        if BASE_DIR.exists():
+            print(f"   Files in BASE_DIR: {list(BASE_DIR.iterdir())[:10]}")
         raise FileNotFoundError(f"CSV file not found: {CSV_PATH}")
     
     # Remove existing database if present

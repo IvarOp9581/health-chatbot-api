@@ -55,17 +55,20 @@ async def cleanup_sessions_task():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
-    # Startup
     print("🚀 Starting Health Chatbot Backend...")
     
+    # Initialize database (with auto-migration on Vercel)
     try:
-        # Initialize database
         await init_db()
         await init_session_table()
         print("✅ Database initialized")
     except Exception as e:
-        print(f"⚠️  Database initialization error: {e}")
-        # Continue anyway - database will be created on first query if needed
+        print(f"❌ Database initialization failed: {e}")
+        import traceback
+        traceback.print_exc()
+        # On Vercel, this is critical - re-raise
+        if os.environ.get('VERCEL'):
+            raise
     
     # Initialize Firestore (if enabled)
     try:
@@ -80,7 +83,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"⚠️  AI initialization error: {e}")
     
-    # Start background tasks only if not on Vercel
+    # Start background tasks (not on Vercel)
     cleanup_task = None
     if not os.environ.get('VERCEL'):
         cleanup_task = asyncio.create_task(cleanup_sessions_task())
