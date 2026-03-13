@@ -22,5 +22,13 @@ except Exception as e:
     traceback.print_exc()
     raise
 
-# Export for Vercel
-handler = app
+# Use Mangum to wrap FastAPI for Vercel
+try:
+    from mangum import Mangum
+    handler = Mangum(app, lifespan="off")
+    print("✅ Mangum handler created")
+except Exception as e:
+    print(f"❌ Failed to create Mangum handler: {e}")
+    import traceback
+    traceback.print_exc()
+    raise
