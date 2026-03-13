@@ -2,6 +2,7 @@ services:
   - type: web
     name: health-chatbot-api
     env: python
+    runtime: python-3.11.0
     region: oregon
     plan: free
     branch: main

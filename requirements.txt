@@ -18,7 +18,7 @@ slowapi==0.1.9
 
 # Utilities
 httpx==0.26.0
-pydantic==2.6.0
+pydantic==2.4.2
 pydantic-settings==2.1.0
 
 # Firebase for cross-device session sync
